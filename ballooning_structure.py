@@ -222,7 +222,7 @@ for i, mode in enumerate(ky_modes):
                 scales[i] = np.array(scale_list)
             else:
                 scales = np.array(scale_list)
-                bl.output_scales(ky_modes, scales, "phi", "ev")
+                bl.output_scales(ky_modes, scales, "phi"+suffix, "ev")
         omegas, spec[i] = bl.freq_spec(mode, times, phi, "phi", output=False)
     print(str("{:6.3f}").format(time.time() - start), "s")
 

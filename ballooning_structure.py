@@ -217,20 +217,17 @@ for i, mode in enumerate(ky_modes):
                 bl.test_corr(mode, doms, corr)
             scale_list.append(corr_time)
             scale_list.append(corr_len)
-        if(args.avgs or args.corr):
+        if args.avgs or args.corr:
             if time_avg:
                 scales[i] = np.array(scale_list)
             else:
                 scales = np.array(scale_list)
-                bl.output_scales(ky_modes, scales, "phi"+suffix, "ev")
-        omegas, spec[i] = bl.freq_spec(mode, times, phi, "phi", output=False)
+                bl.output_scales(ky_modes, scales, "phi" + suffix, "ev")
+        # omegas, spec[i] = bl.freq_spec(mode, times, phi, "phi", output=False)
     print(str("{:6.3f}").format(time.time() - start), "s")
 
 if args.avgs and not np.any(pods):
-    # if time_avg: 
+    if time_avg:
         bl.output_scales(ky_modes, scales, "avgs", "avgs")
         varname = "phi2_kx" + str(int(kx_cent)).zfill(3)
         bl.output_spec_all_ky(ky_list, omegas, spec, varname)
-    # else:
-    #     bl.output_scales(ky_modes, scales, "phi", "ev")
-        

@@ -202,9 +202,10 @@ for i, mode in enumerate(ky_modes):
                     avg_freq = bl.avg_freq2_tz(mode, times, phi)
                     avg_kz = bl.avg_kz2_tz(mode, phi)
                 else:
-                    # avg_freq = bl.avg_freq2(times, phi)
+                    avg_freq = bl.avg_freq2(times, phi)
                     avg_kz = bl.avg_kz2(mode, phi)
-            # scale_list.append(avg_freq)
+            omegas, spec[i] = bl.freq_spec(mode, times, phi, "phi", output=False)
+            scale_list.append(avg_freq)
             scale_list.append(avg_kz)
         if args.corr:
             dphi = phi[:, :, 0]  # average over kx
@@ -223,7 +224,6 @@ for i, mode in enumerate(ky_modes):
             else:
                 scales = np.array(scale_list)
                 bl.output_scales(ky_modes, scales, "phi" + suffix, "ev")
-        # omegas, spec[i] = bl.freq_spec(mode, times, phi, "phi", output=False)
     print(str("{:6.3f}").format(time.time() - start), "s")
 
 if args.avgs and not np.any(pods):

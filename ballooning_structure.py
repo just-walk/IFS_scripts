@@ -224,6 +224,8 @@ for i, mode in enumerate(ky_modes):
             else:
                 scales = np.array(scale_list)
                 bl.output_scales(ky_modes, scales, "phi" + suffix, "ev")
+        if args.plot:
+            bl.plot_vars(mode,['phi'], times, show = show_figs, save=save_figs)
     print(str("{:6.3f}").format(time.time() - start), "s")
 
 if args.avgs and not np.any(pods):

@@ -25,9 +25,7 @@ parser.add_argument(
 parser.add_argument(
     "--print", "-p", action="store_true", default=False, help="print to stdout"
 )
-parser.add_argument(
-    "--output", "-o", action="store_true", default=False, help="output to file"
-)
+parser.add_argument("--output", "-o", type=str, default=False, help="output to file")
 parser.add_argument(
     "--nrg_cols", "-C", type=tuple, default=(4, 5, 6, 7), help="nrg columns to include"
 )
@@ -53,4 +51,4 @@ if args.print:
     print(flxs_avg_tr)
 
 if args.output:
-    nrg.output_nrg(flxs_avg_t)
+    nrg.output_nrg(flxs_avg_t, args.output)

@@ -60,7 +60,7 @@ def nrg_run_average(nrg_arr):
     return avg_nrg
 
 
-def output_nrg(nrg_data):
+def output_nrg(nrg_data, filename):
     """Output nrg_data for multiple ky"""
     # header = (
     #     varname
@@ -74,8 +74,8 @@ def output_nrg(nrg_data):
     # nrows = tmp.size - 1
     # column = np.array(tmp)[np.newaxis, :].T
     # data = np.hstack((column, np.vstack((yvar["vlist"], spec[:nrows, :]))))
-    varname = "nrg_flxs"
-    filename = "./" + varname + "_.dat"
+    # varname = "nrg_flxs"
+    # filename = "./" + varname + "_.dat"
     np.savetxt(
         filename,
         nrg_data,

@@ -6,10 +6,7 @@ computing the average of the fluxes over a given time window
 """
 
 import argparse
-import numpy as np
-from get_nrg import get_nrg0
-from balloon_lib import check_suffix
-from nrg_tools import nrg_averager
+import nrg_tools as nrg
 
 parser = argparse.ArgumentParser()
 parser.add_argument("runlist", type=str, nargs="+", help="list of run numbers to read")
@@ -25,6 +22,15 @@ parser.add_argument(
 parser.add_argument(
     "--avg", "-a", action="store_true", default=False, help="average over runs"
 )
+parser.add_argument(
+    "--print", "-p", action="store_true", default=False, help="print to stdout"
+)
+parser.add_argument(
+    "--output", "-o", action="store_true", default=False, help="output to file"
+)
+parser.add_argument(
+    "--nrg_cols", "-C", type=tuple, default=(4, 5, 6, 7), help="nrg columns to include"
+)
 
 args = parser.parse_args()
 
@@ -32,17 +38,19 @@ runlist = args.runlist
 stime = args.stime
 etime = args.etime
 nspec = args.nspec
+nrg_cols = args.nrg_cols
 time_range = (stime, etime)
 
-avg_nrg, _, oor_list = nrg_averager(runlist, time_range, nspec)
-avg_flxs = avg_nrg[:, 4:8]
+nrg_avg_t, _, oor_list = nrg.nrg_time_average(runlist, time_range, nspec)
+flxs_avg_t = nrg_avg_t[:, nrg_cols]
 
-if len(runlist) > 1:
-    flxs = np.delete(avg_flxs, oor_list, axis=0)
-    if args.avg:
-        mean_flxs = np.mean(flxs, axis=0)
-        print(np.squeeze(mean_flxs))
-    else:
-        print(np.squeeze(flxs))
+if args.avg and len(runlist) > 1:
+    flxs_avg_tr = nrg.nrg_run_average(flxs_avg_t)
 else:
-    print(np.squeeze(avg_flxs))
+    flxs_avg_tr = flxs_avg_t
+
+if args.print:
+    print(flxs_avg_tr)
+
+if args.output:
+    nrg.output_nrg(flxs_avg_t)

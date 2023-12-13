@@ -70,16 +70,20 @@ def nrg_run_average(nrg_arr):
 
 def output_nrg(nrg_data, pars, nrg_cols):
     """Output nrg_data for multiple ky in separate files for each species"""
-    for i, par in zip(range(nrg_data.shape[1]), pars):
+    ky_list = np.zeros((nrg_data.shape[0], 1))
+    for j, par in enumerate(pars):
+        ky_list[j] = par["kymin"]
+    for i in range(nrg_data.shape[1]):
         spec = par["name" + str(i + 1)][1:-1]  # indexing to remove quotes
         filename = "avg_nrg_" + spec
-        head = ""
+        head = "$k_y$ "
         for col in nrg_cols:
             head += VARNAMES[col] + " "
         header = head[:-1]  # remove trailing space
+        data = np.concatenate((ky_list, np.squeeze(nrg_data[:, i, :])), axis=1)
         np.savetxt(
             filename,
-            np.squeeze(nrg_data[:, i, :]),
+            data,
             fmt="%E",
             header=header,
             encoding="UTF-8",

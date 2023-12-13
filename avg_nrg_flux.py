@@ -25,7 +25,7 @@ parser.add_argument(
 parser.add_argument(
     "--print", "-p", action="store_true", default=False, help="print to stdout"
 )
-parser.add_argument("--output", "-o", type=str, default=False, help="output to file")
+parser.add_argument("--output", "-o", action="store_true", default=False, help="output to file")
 parser.add_argument(
     "--nrg_cols", "-C", type=tuple, default=(4, 5, 6, 7), help="nrg columns to include"
 )
@@ -40,7 +40,7 @@ nrg_cols = args.nrg_cols
 time_range = (stime, etime)
 
 nrg_avg_t, _, oor_list = nrg.nrg_time_average(runlist, time_range, nspec)
-flxs_avg_t = nrg_avg_t[:, nrg_cols]
+flxs_avg_t = nrg_avg_t[:, :, nrg_cols]
 
 if args.avg and len(runlist) > 1:
     flxs_avg_tr = nrg.nrg_run_average(flxs_avg_t)
@@ -51,4 +51,4 @@ if args.print:
     print(flxs_avg_tr)
 
 if args.output:
-    nrg.output_nrg(flxs_avg_t, args.output)
+    nrg.output_nrg(flxs_avg_t)

@@ -60,29 +60,17 @@ def nrg_run_average(nrg_arr):
     return avg_nrg
 
 
-def output_nrg(nrg_data, filename):
+def output_nrg(nrg_data):
     """Output nrg_data for multiple ky"""
-    # header = (
-    #     varname
-    #     + "\t"
-    #     + "first row is "
-    #     + yvar["name"]
-    #     + " and first column is "
-    #     + xvar["name"]
-    # )
-    # tmp = np.insert(xvar["vlist"], 0, yvar["vlist"].size)
-    # nrows = tmp.size - 1
-    # column = np.array(tmp)[np.newaxis, :].T
-    # data = np.hstack((column, np.vstack((yvar["vlist"], spec[:nrows, :]))))
-    # varname = "nrg_flxs"
-    # filename = "./" + varname + "_.dat"
-    np.savetxt(
-        filename,
-        nrg_data,
-        fmt="% E",
-        # header=header,
+    for i in range(nrg_data.shape[1]):
+        filename = "avg_nrg_spec"+str(i)+".dat"
+        np.savetxt(
+            filename,
+            np.squeeze(nrg_data[:,i,:]),
+            fmt="% E",
+            # header=header,
         encoding="UTF-8",
-    )
+        )
 
 
 def read_fluxspectra(filename):

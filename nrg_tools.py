@@ -10,10 +10,18 @@ from get_nrg import get_nrg0
 from balloon_lib import check_suffix
 import matplotlib.pyplot as plt
 
-# try:
-#     from scipy.interpolate import interp1d as interp
-# except ImportError:
-#     from numpy import interp
+VARNAMES = (
+    r"$|n|^2$",
+    r"$|u_\parallel|^2$",
+    r"$T_\parallel$",
+    r"$T_\perp$",
+    r"$\Gamma_\text{es}^x$",
+    r"$\Gamma_\text{em}^x$",
+    r"$Q_\text{es}^x$",
+    r"$Q_\text{em}^x$",
+    r"$\Pi_\text{es}^x$",
+    r"$\Pi_\text{em}^x$",
+)
 
 
 def nrg_time_average(runlist, time_range, nspec):
@@ -60,16 +68,20 @@ def nrg_run_average(nrg_arr):
     return avg_nrg
 
 
-def output_nrg(nrg_data, pars):
+def output_nrg(nrg_data, pars, nrg_cols):
     """Output nrg_data for multiple ky in separate files for each species"""
     for i, par in zip(range(nrg_data.shape[1]), pars):
         spec = par["name" + str(i + 1)][1:-1]  # indexing to remove quotes
         filename = "avg_nrg_" + spec
+        head = ""
+        for col in nrg_cols:
+            head += VARNAMES[col] + " "
+        header = head[:-1]  # remove trailing space
         np.savetxt(
             filename,
             np.squeeze(nrg_data[:, i, :]),
-            fmt="% E",
-            # header=header,
+            fmt="%E",
+            header=header,
             encoding="UTF-8",
         )
 

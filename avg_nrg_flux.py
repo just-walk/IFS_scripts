@@ -63,4 +63,4 @@ if args.print:
 
 # Output time-averaged fluxes for each ky, in a separate file for each species_list
 if args.output:
-    nrg.output_nrg(flxs_avg_t, pars)
+    nrg.output_nrg(flxs_avg_t, pars, nrg_cols)

@@ -90,6 +90,11 @@ def output_fluxes(nrg_data, pars, nrg_cols):
         )
 
 
+def read_fluxes(filename):
+    """Open avg_nrg file (from ql_tools.py) and return as array"""
+    return np.loadtxt(filename)
+
+
 def read_fluxspectra(filename):
     """Reads fluxspectra file, outputting kx, ky spectra as two arrays in a list"""
     array_list = []
@@ -109,21 +114,27 @@ def read_fluxspectra(filename):
 def create_shape(nl_flux, ql_flux, ifplot=False):
     """Interpolates NL flux data to QL k values, calculates scaling for each"""
     k_nl = nl_flux[1:, 0]
-    k_ql = ql_flux[1:, 0]
-    Q_nl = nl_flux[1:, 2]
-    Q_ql = ql_flux[1:, 2]
+    k_ql = ql_flux[:, 0]
 
-    f = np.interp(k_ql, k_nl, Q_nl)
+    shape = np.zeros((k_ql.size, 5))
+    shape[:, 0] = k_ql
 
-    shape = np.array([k_ql, f / Q_ql])
+    for col in range(1, shape.shape[1]):
+        f = np.interp(k_ql, k_nl, nl_flux[1:, col])
+        shape[:, col] = f / ql_flux[:, col]
 
+    varname_map = (0, 4, 6, 5, 7)  # map column indices to VARNAMES
     if ifplot:
         plt.title(r"Shape function")
         plt.xlabel("ik")
         plt.ylabel(r"$S(ik)$")
-        plt.plot(k_nl, Q_nl)
-        plt.plot(k_ql, Q_ql)
-        plt.plot(k_ql, shape[:, 1])
+        for col in range(1, shape.shape[1]):
+            plt.plot(k_nl, nl_flux[1:, col], label="NL, " + VARNAMES[varname_map[col]])
+        for col in range(1, shape.shape[1]):
+            plt.plot(k_ql, ql_flux[:, col], label="QL, " + VARNAMES[varname_map[col]])
+        for col in range(1, shape.shape[1]):
+            plt.plot(k_ql, shape[:, col], label="S, " + VARNAMES[varname_map[col]])
+        plt.legend()
         plt.show()
 
     return shape
@@ -143,7 +154,7 @@ def output_spec(spec, varname):
     filename = "./" + varname + ".dat"
     np.savetxt(
         filename,
-        spec.T,
+        spec,
         fmt="% E",
         header=header,
         encoding="UTF-8",
@@ -151,6 +162,6 @@ def output_spec(spec, varname):
 
 
 def read_spec(filename):
-    """Output spectrum for multiple ky"""
+    """Read spectrum for multiple ky"""
     spec = np.loadtxt(filename)
     return spec

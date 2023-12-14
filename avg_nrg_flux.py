@@ -6,7 +6,7 @@ computing the average of the fluxes over a given time window
 """
 
 import argparse
-import nrg_tools as nrg
+import ql_tools as ql
 import parIOWrapper as parw
 
 parser = argparse.ArgumentParser()
@@ -48,13 +48,13 @@ pars = parw.read_parameters_files(runlist)
 #     print(par)
 
 # Read and time average fluxses from nrg files
-nrg_avg_t, _, oor_list = nrg.nrg_time_average(runlist, time_range, nspec)
+nrg_avg_t, _, oor_list = ql.nrg_time_average(runlist, time_range, nspec)
 flxs_avg_t = nrg_avg_t[:, :, nrg_cols]
 
 
 # Average over all ky
 if args.avg and len(runlist) > 1:
-    flxs_avg_tr = nrg.nrg_run_average(flxs_avg_t)
+    flxs_avg_tr = ql.nrg_run_average(flxs_avg_t)
 else:
     flxs_avg_tr = flxs_avg_t
 
@@ -63,4 +63,4 @@ if args.print:
 
 # Output time-averaged fluxes for each ky, in a separate file for each species_list
 if args.output:
-    nrg.output_nrg(flxs_avg_t, pars, nrg_cols)
+    ql.output_fluxes(flxs_avg_t, pars, nrg_cols)

@@ -68,13 +68,13 @@ def nrg_run_average(nrg_arr):
     return avg_nrg
 
 
-def output_nrg(nrg_data, pars, nrg_cols):
-    """Output nrg_data for multiple ky in separate files for each species"""
+def output_fluxes(nrg_data, pars, nrg_cols):
+    """Output flux data for multiple ky in separate files for each species"""
     ky_list = np.zeros((nrg_data.shape[0], 1))
     for j, par in enumerate(pars):
         ky_list[j] = par["kymin"]
     for i in range(nrg_data.shape[1]):
-        spec = par["name" + str(i + 1)][1:-1]  # indexing to remove quotes
+        spec = par["name" + str(i + 1)]
         filename = "avg_nrg_" + spec
         head = "$k_y$ "
         for col in nrg_cols:

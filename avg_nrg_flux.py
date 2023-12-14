@@ -30,7 +30,7 @@ parser.add_argument(
     "--output", "-o", action="store_true", default=False, help="output to file"
 )
 parser.add_argument(
-    "--nrg_cols", "-C", type=tuple, default=(4, 5, 6, 7), help="nrg columns to include"
+    "--nrg_cols", "-C", type=tuple, default=(4, 6, 5, 7), help="nrg columns to include"
 )
 
 # Parse arguments

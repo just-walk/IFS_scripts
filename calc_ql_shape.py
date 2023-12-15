@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Script for reading a list of input files (.dat or ####) and 
-computing the average of the fluxes over a given time window
+computing the ql shape function (coefficients for each ky)
 """
 
 import argparse
@@ -25,5 +25,5 @@ ql_file = args.ql_flux
 nl_fluxes = ql.read_fluxspectra(nl_file)
 ql_fluxes = ql.read_fluxes(ql_file)
 
-shape_func = ql.create_shape(nl_fluxes[1], ql_fluxes, ifplot=args.plotg)
-ql.output_spec(shape_func, "ql_shape")
+shape_func = ql.create_shape(nl_fluxes[1], ql_fluxes, ifplot=args.plot)
+ql.output_shape(shape_func, "ql_shape")

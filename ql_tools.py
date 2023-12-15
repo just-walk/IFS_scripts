@@ -23,6 +23,8 @@ VARNAMES = (
     r"$\Pi_\text{em}^x$",
 )
 
+VARNAME_MAP = (0, 4, 6, 5, 7)  # map fluxspectra column indices to VARNAMES
+
 
 def nrg_time_average(runlist, time_range, nspec):
     """
@@ -123,17 +125,16 @@ def create_shape(nl_flux, ql_flux, ifplot=False):
         f = np.interp(k_ql, k_nl, nl_flux[1:, col])
         shape[:, col] = f / ql_flux[:, col]
 
-    varname_map = (0, 4, 6, 5, 7)  # map column indices to VARNAMES
     if ifplot:
         plt.title(r"Shape function")
         plt.xlabel("ik")
         plt.ylabel(r"$S(ik)$")
         for col in range(1, shape.shape[1]):
-            plt.plot(k_nl, nl_flux[1:, col], label="NL, " + VARNAMES[varname_map[col]])
+            plt.plot(k_nl, nl_flux[1:, col], label="NL, " + VARNAMES[VARNAME_MAP[col]])
         for col in range(1, shape.shape[1]):
-            plt.plot(k_ql, ql_flux[:, col], label="QL, " + VARNAMES[varname_map[col]])
+            plt.plot(k_ql, ql_flux[:, col], label="QL, " + VARNAMES[VARNAME_MAP[col]])
         for col in range(1, shape.shape[1]):
-            plt.plot(k_ql, shape[:, col], label="S, " + VARNAMES[varname_map[col]])
+            plt.plot(k_ql, shape[:, col], label="S, " + VARNAMES[VARNAME_MAP[col]])
         plt.legend()
         plt.show()
 
@@ -165,3 +166,19 @@ def read_spec(filename):
     """Read spectrum for multiple ky"""
     spec = np.loadtxt(filename)
     return spec
+
+
+def output_shape(spec, varname):
+    """Output shape function for multiple ky"""
+    head = "$k_y$ "
+    for col in range(1, spec.shape[1]):
+        head += VARNAMES[VARNAME_MAP[col]] + " "
+    header = head[:-1]  # remove trailing space
+    filename = "./" + varname + ".dat"
+    np.savetxt(
+        filename,
+        spec,
+        fmt="% E",
+        header=header,
+        encoding="UTF-8",
+    )

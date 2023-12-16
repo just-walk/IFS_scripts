@@ -47,7 +47,7 @@ pars = parw.read_parameters_files(runlist)
 # for par in pars:
 #     print(par)
 
-# Read and time average fluxses from nrg files
+# Read and time average fluxes from nrg files
 nrg_avg_t, _, oor_list = ql.nrg_time_average(runlist, time_range, nspec)
 flxs_avg_t = nrg_avg_t[:, :, nrg_cols]
 

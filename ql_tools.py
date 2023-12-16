@@ -7,8 +7,8 @@ Module with some tools for reading and manipulating data from nrg files
 from itertools import groupby
 import numpy as np
 from get_nrg import get_nrg0
-from balloon_lib import check_suffix
 import matplotlib.pyplot as plt
+import genelib as gl
 
 VARNAMES = (
     r"$|n|^2$",
@@ -39,7 +39,7 @@ def nrg_time_average(runlist, time_range, nspec):
     oor_list = []
 
     for irun, run in enumerate(runlist):
-        suffix = check_suffix(run)
+        suffix = gl.check_suffix(run)
         out_list = list(get_nrg0(suffix, nspec))
         times = np.array(out_list[0])
         nrg_arr = np.array(out_list[1:])
@@ -113,6 +113,18 @@ def read_fluxspectra(filename):
     return array_list
 
 
+def create_shapes(nl_fluxes, flxs_avg, ql_runs):
+    ky_list = np.zeros((flxs_avg.shape[0], 1))
+    for j, run in enumerate(ql_runs):
+        ky_list[j] = run.pars["kymin"]
+    shape_dict = {}
+    for i in range(ql_runs[0].pars["n_spec"]):  # take n_spec from first par dict
+        spec = ql_runs[0].pars["name" + str(i + 1)]
+        ql_flux = np.concatenate((ky_list, np.squeeze(flxs_avg[:, i, :])), axis=1)
+        shape_dict[spec] = create_shape(nl_fluxes[spec][1], ql_flux)
+    return shape_dict
+
+
 def create_shape(nl_flux, ql_flux, ifplot=False):
     """Interpolates NL flux data to QL k values, calculates scaling for each"""
     k_nl = nl_flux[1:, 0]
@@ -182,3 +194,32 @@ def output_shape(spec, varname):
         header=header,
         encoding="UTF-8",
     )
+
+
+# def parse_runnumber(filepath):
+#     return re.search(r"([0-9]{1,4})$", filepath).group(0)
+
+
+def read_genediag_fluxes(generun: gl.GENERun):
+    flux_dict = {}
+    for i in range(generun.pars["n_spec"]):
+        specname = generun.pars["name" + str(i + 1)]
+        if generun.suffix == ".dat":
+            filename = generun.dir_path + "fluxspectra" + specname + "_act.dat"
+        else:
+            filename = (
+                generun.dir_path + "fluxspectra" + specname + "_" + generun.suffix
+            )
+        # flux_list.append(read_fluxspectra(filename))
+        flux_dict[specname] = read_fluxspectra(filename)
+    return flux_dict
+
+
+# class NLRun(gl.GENERun):
+#     """Extension of GENERun object to include additional data structures"""
+
+#     def __init__(self, parameters_filepath: str):
+#         super().__init_(parameters_filepath)
+
+#     def init_fluxarrays(self):
+#         self.flux.

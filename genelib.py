@@ -33,3 +33,10 @@ class GENERun(object):
 
     def read_parameters(self):
         self.pars = parw.create_parameters_dict(self.par_path)
+
+    def update_ky(self, kylist: list):
+        s = "1 !scanlist:"
+        for ky in kylist:
+            s += str(ky) + ","
+        s = s[:-1]  # remove last comma
+        self.pars["kymin"] = s

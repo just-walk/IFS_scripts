@@ -125,13 +125,13 @@ class Parameters(object):
                 parfileout.write("&" + item + "\n")
             if specflag:
                 [
-                    parfileout.write(par[0:-1] + "=" + self.pardict[par] + "\n")
+                    parfileout.write(par[0:-1] + "=" + str(self.pardict[par]) + "\n")
                     for par in self.pardict.keys()
                     if self.nmldict[par] == item
                 ]
             else:
                 [
-                    parfileout.write(par + "=" + self.pardict[par] + "\n")
+                    parfileout.write(par + "=" + str(self.pardict[par]) + "\n")
                     for par in self.pardict.keys()
                     if self.nmldict[par] == item
                 ]

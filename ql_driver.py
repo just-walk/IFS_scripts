@@ -55,7 +55,7 @@ flxs_avg_t = nrg_avg_t[:, :, args.nrg_cols]
 # Read nonlinear fluxes
 nl_fluxes = ql.read_genediag_fluxes(nl_run)
 
-shapes = ql.create_shapes(nl_fluxes, flxs_avg_t, ql_runs)
+coefs = ql.create_spec_coefs(nl_fluxes, flxs_avg_t, ql_runs)
 
-print(shapes["ions"])
-print(shapes["electrons"])
+print(coefs["ions"])
+print(coefs["electrons"])

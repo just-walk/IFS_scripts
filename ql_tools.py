@@ -113,51 +113,51 @@ def read_fluxspectra(filename):
     return array_list
 
 
-def create_shapes(nl_fluxes, flxs_avg, ql_runs):
+def create_spec_coefs(nl_fluxes, flxs_avg, ql_runs):
     ky_list = np.zeros((flxs_avg.shape[0], 1))
     for j, run in enumerate(ql_runs):
         ky_list[j] = run.pars["kymin"]
-    shape_dict = {}
+    spec_coef_dict = {}
     for i in range(ql_runs[0].pars["n_spec"]):  # take n_spec from first par dict
         spec = ql_runs[0].pars["name" + str(i + 1)]
         ql_flux = np.concatenate((ky_list, np.squeeze(flxs_avg[:, i, :])), axis=1)
-        shape_dict[spec] = create_shape(nl_fluxes[spec][1], ql_flux)
-    return shape_dict
+        spec_coef_dict[spec] = create_spec_coef(nl_fluxes[spec][1], ql_flux)
+    return spec_coef_dict
 
 
-def create_shape(nl_flux, ql_flux, ifplot=False):
+def create_spec_coef(nl_flux, ql_flux, ifplot=False):
     """Interpolates NL flux data to QL k values, calculates scaling for each"""
     k_nl = nl_flux[1:, 0]
     k_ql = ql_flux[:, 0]
 
-    shape = np.zeros((k_ql.size, 5))
-    shape[:, 0] = k_ql
+    spec_coef = np.zeros((k_ql.size, 5))
+    spec_coef[:, 0] = k_ql
 
-    for col in range(1, shape.shape[1]):
+    for col in range(1, spec_coef.shape[1]):
         f = np.interp(k_ql, k_nl, nl_flux[1:, col])
-        shape[:, col] = f / ql_flux[:, col]
+        spec_coef[:, col] = f / ql_flux[:, col]
 
     if ifplot:
-        plt.title(r"Shape function")
+        plt.title(r"Spec_Coef function")
         plt.xlabel("ik")
         plt.ylabel(r"$S(ik)$")
-        for col in range(1, shape.shape[1]):
+        for col in range(1, spec_coef.shape[1]):
             plt.plot(k_nl, nl_flux[1:, col], label="NL, " + VARNAMES[VARNAME_MAP[col]])
-        for col in range(1, shape.shape[1]):
+        for col in range(1, spec_coef.shape[1]):
             plt.plot(k_ql, ql_flux[:, col], label="QL, " + VARNAMES[VARNAME_MAP[col]])
-        for col in range(1, shape.shape[1]):
-            plt.plot(k_ql, shape[:, col], label="S, " + VARNAMES[VARNAME_MAP[col]])
+        for col in range(1, spec_coef.shape[1]):
+            plt.plot(k_ql, spec_coef[:, col], label="S, " + VARNAMES[VARNAME_MAP[col]])
         plt.legend()
         plt.show()
 
-    return shape
+    return spec_coef
 
 
-def plot_shape(shape):
-    plt.title(r"Shape function")
+def plot_spec_coef(spec_coef):
+    plt.title(r"Spec_Coef function")
     plt.xlabel("ik")
     plt.ylabel(r"$S(ik)$")
-    plt.plot(shape)
+    plt.plot(spec_coef)
     plt.show()
 
 
@@ -180,8 +180,8 @@ def read_spec(filename):
     return spec
 
 
-def output_shape(spec, varname):
-    """Output shape function for multiple ky"""
+def output_spec_coef(spec, varname):
+    """Output spec_coef function for multiple ky"""
     head = "$k_y$ "
     for col in range(1, spec.shape[1]):
         head += VARNAMES[VARNAME_MAP[col]] + " "

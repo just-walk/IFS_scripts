@@ -4,6 +4,8 @@
 from pathlib import Path
 import parIOWrapper as parw
 import re
+import f90nml
+import os
 
 
 def check_suffix(run_number):
@@ -32,7 +34,22 @@ class GENERun(object):
         # print(self.runnumber)
 
     def read_parameters(self):
-        self.pars = parw.create_parameters_dict(self.par_path)
+        # self.pars = parw.create_parameters_dict(self.par_path)
+        # self.pars = f90nml.read(self.par_path)
+        try:
+            # params = f90nml.read(fpath.resolve())
+            self.pars = f90nml.read(self.par_path)
+        except:
+            # with open(fpath.resolve(), "r") as f:
+            with open(self.par_path, "r") as f:
+                file_content = f.read()
+            with open(".dummy_params", "w") as f:
+                f.write(file_content.replace("FCVERSION", "!FCVERSION"))
+                # params = f90nml.read(".dummy_params")
+            self.pars = f90nml.read(".dummy_params")
+            os.remove(".dummy_params")
+            # params = set_defaults(params)
+            # self.pars = set_defaults(self.pars)
 
     def update_ky(self, kylist: list):
         s = "1 !scanlist:"

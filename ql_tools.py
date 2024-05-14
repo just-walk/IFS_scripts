@@ -116,10 +116,10 @@ def read_fluxspectra(filename):
 def create_spec_coefs(nl_fluxes, flxs_avg, ql_runs):
     ky_list = np.zeros((flxs_avg.shape[0], 1))
     for j, run in enumerate(ql_runs):
-        ky_list[j] = run.pars["kymin"]
+        ky_list[j] = run.pars["box"]["kymin"]
     spec_coef_dict = {}
-    for i in range(ql_runs[0].pars["n_spec"]):  # take n_spec from first par dict
-        spec = ql_runs[0].pars["name" + str(i + 1)]
+    for i in range(ql_runs[0].pars["box"]["n_spec"]):  # take n_spec from first par dict
+        spec = ql_runs[0].pars["species"][i]["name"]
         ql_flux = np.concatenate((ky_list, np.squeeze(flxs_avg[:, i, :])), axis=1)
         spec_coef_dict[spec] = create_spec_coef(nl_fluxes[spec][1], ql_flux)
     return spec_coef_dict
@@ -202,8 +202,8 @@ def output_spec_coef(spec, varname):
 
 def read_genediag_fluxes(generun: gl.GENERun):
     flux_dict = {}
-    for i in range(generun.pars["n_spec"]):
-        specname = generun.pars["name" + str(i + 1)]
+    for i in range(generun.pars["box"]["n_spec"]):
+        specname = generun.pars["species"][i]["name"]
         if generun.suffix == ".dat":
             filename = generun.dir_path + "fluxspectra" + specname + "_act.dat"
         else:

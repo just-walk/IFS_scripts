@@ -241,4 +241,4 @@ def update_ql_coefs(run: gl.GENERun, coefs, index):
         except ValueError:
             print("species namelists are incorrectly ordered")
         run.pars["species"][i]["qlG"] = coefs[spec][index][1]
-        run.pars["species"][i]["qlQ"] = coefs[spec][index][3]
+        run.pars["species"][i]["qlQ"] = coefs[spec][index][2]

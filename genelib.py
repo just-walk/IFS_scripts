@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from pathlib import Path
+import parIOWrapper as parw
 import re
+import f90nml
+import os
 
 
 def check_suffix(run_number):
@@ -11,6 +15,51 @@ def check_suffix(run_number):
         match = re.search(r"([0-9]{1,4})$", run_number)
         suffix = "_" + match.group(0).zfill(4)
     else:
-        print("Please enter a valid run number, e.g. .dat or 0123")
-        return None
+        ValueError("Please enter a valid run number, e.g. .dat or 0123")
     return suffix
+
+
+class GENERun(object):
+    """Documentation for GENERun object"""
+
+    def __init__(self, parameters_filepath: str):
+        self.init_paths(parameters_filepath)
+
+    def init_paths(self, parameters_filepath):
+        filepath = Path(parameters_filepath)
+        self.dir_path = str(filepath.parent) + "/"
+        self.par_path = str(filepath)
+        self.suffix = check_suffix(parameters_filepath)
+        self.runnumber = self.suffix.strip("_").strip(".")
+        # print(self.runnumber)
+
+    def read_parameters(self):
+        # self.pars = parw.create_parameters_dict(self.par_path)
+        # self.pars = f90nml.read(self.par_path)
+        try:
+            # params = f90nml.read(fpath.resolve())
+            self.pars = f90nml.read(self.par_path)
+        except:
+            # with open(fpath.resolve(), "r") as f:
+            with open(self.par_path, "r") as f:
+                file_content = f.read()
+            with open(".dummy_params", "w") as f:
+                f.write(file_content.replace("FCVERSION", "!FCVERSION"))
+                # params = f90nml.read(".dummy_params")
+            self.pars = f90nml.read(".dummy_params")
+            os.remove(".dummy_params")
+            # params = set_defaults(params)
+            # self.pars = set_defaults(self.pars)
+
+    # def write_parameters(self):
+    #     with open(self.par_path, "w") as nml_file:
+    def write_parameters(self, outfile=""):
+        with open(self.par_path if outfile == "" else outfile, "w") as nml_file:
+            self.pars.write(nml_file)
+
+    def update_ky(self, kylist: list):
+        s = "1 !scanlist:"
+        for ky in kylist:
+            s += str(ky) + ","
+        s = s[:-1]  # remove last comma
+        self.pars["kymin"] = s

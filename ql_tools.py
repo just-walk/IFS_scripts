@@ -26,7 +26,7 @@ VARNAMES = (
 VARNAME_MAP = (0, 4, 6, 5, 7)  # map fluxspectra column indices to VARNAMES
 
 
-def nrg_time_average(runlist, time_range, nspec):
+def nrg_time_average(runlist, time_range, nspec, path):
     """
     Function for reading a list of input files (.dat or ####) and
     computing the average of the nrg variables over a given time window
@@ -40,7 +40,7 @@ def nrg_time_average(runlist, time_range, nspec):
 
     for irun, run in enumerate(runlist):
         suffix = gl.check_suffix(run)
-        out_list = list(get_nrg0(suffix, nspec))
+        out_list = list(get_nrg0(suffix, nspec, path=path))
         times = np.array(out_list[0])
         nrg_arr = np.array(out_list[1:])
         time_rng = np.nonzero((stime < times) & (times < etime))[0]
@@ -223,3 +223,22 @@ def read_genediag_fluxes(generun: gl.GENERun):
 
 #     def init_fluxarrays(self):
 #         self.flux.
+
+
+def create_new_pars_dict(generun, spec_coefs, avg=True):
+    s = ""
+    for i in range(generun.par["box"]["n_spec"]):
+        specname = pars["species"][i]["name"]
+
+
+def update_ql_coefs(run: gl.GENERun, coefs, index):
+    # patch_nml = {"general": {"ql_D": coefs}}
+    # f90nml.patch(self.par_path, patch_nml, self.par_path + "_new")
+    # for i in range(self.pars["box"]["n_spec"]):
+    for i, spec in enumerate(coefs):
+        try:
+            spec == run.pars["species"][i]["name"]
+        except ValueError:
+            print("species namelists are incorrectly ordered")
+        run.pars["species"][i]["qlG"] = coefs[spec][index][1]
+        run.pars["species"][i]["qlQ"] = coefs[spec][index][3]

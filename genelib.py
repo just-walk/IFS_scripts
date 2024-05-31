@@ -51,6 +51,12 @@ class GENERun(object):
             # params = set_defaults(params)
             # self.pars = set_defaults(self.pars)
 
+    # def write_parameters(self):
+    #     with open(self.par_path, "w") as nml_file:
+    def write_parameters(self, outfile=""):
+        with open(self.par_path if outfile == "" else outfile, "w") as nml_file:
+            self.pars.write(nml_file)
+
     def update_ky(self, kylist: list):
         s = "1 !scanlist:"
         for ky in kylist:

@@ -65,7 +65,7 @@ for run in ql_runs:
 
 # Read and time average fluxes from nrg files
 nrg_avg_t, _, oor_list = ql.nrg_time_average(ql_runs, time_range)
-flxs_avg_t = nrg_avg_t[:, :, args.nrg_cols]
+flxs_avg_t = nrg_avg_t[:, :, args.nrg_cols] # [ky, spec, fluxes]
 
 # Read nonlinear fluxes
 nl_fluxes = ql.read_genediag_fluxes(nl_run)

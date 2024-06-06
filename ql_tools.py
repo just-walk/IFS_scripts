@@ -71,17 +71,22 @@ def nrg_run_average(nrg_arr):
     return avg_nrg
 
 
-def output_fluxes(nrg_data, pars, nrg_cols):
+def output_fluxes(nrg_data, runlist: list, output=None):
     """Output flux data for multiple ky in separate files for each species"""
     ky_list = np.zeros((nrg_data.shape[0], 1))
-    for j, par in enumerate(pars):
-        ky_list[j] = par["kymin"]
+    # pars_list = np.zeros((nrg_data.shape[0], 1))
+    for j, run in enumerate(runlist):
+        ky_list[j] = run.pars["box"]["kymin"]
+        # pars_list[j] = run.pars
     for i in range(nrg_data.shape[1]):
-        spec = par["name" + str(i + 1)]
-        filename = "avg_nrg_" + spec
+        spec = runlist[0].pars["species"][i]["name"]
+        if output is None:
+            filename = "avg_nrg_" + spec
+        else:
+            filename = output + spec
         head = "$k_y$ "
-        for col in nrg_cols:
-            head += VARNAMES[col] + " "
+        for col in range(nrg_data.shape[2]):
+            head += VARNAMES[VARNAME_MAP[col+1]] + " "
         header = head[:-1]  # remove trailing space
         data = np.concatenate((ky_list, np.squeeze(nrg_data[:, i, :])), axis=1)
         np.savetxt(

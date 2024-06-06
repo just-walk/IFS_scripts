@@ -26,8 +26,8 @@ parser.add_argument(
     "--output",
     "-o",
     type=str,
-    default="parameters_new.dat",
-    help="output parameters file for QL run",
+    default="_newql",
+    help="output parameters suffix for QL run",
 )
 
 
@@ -65,8 +65,7 @@ for run in ql_runs:
 
 # Read and time average fluxes from nrg files
 nrg_avg_t, _, oor_list = ql.nrg_time_average(
-    runlist, time_range, nl_run.pars["box"]["n_spec"], run.dir_path
-)
+    ql_runs, time_range, nl_run.pars["box"]["n_spec"])
 flxs_avg_t = nrg_avg_t[:, :, args.nrg_cols]
 
 # Read nonlinear fluxes
@@ -76,7 +75,7 @@ coefs = ql.create_spec_coefs(nl_fluxes, flxs_avg_t, ql_runs)
 
 for i, run in enumerate(ql_runs):
     ql.update_ql_coefs(run, coefs, i)
-    run.write_parameters("parameters_" + run.runnumber + "_newql")
+    run.write_parameters("parameters_" + run.runnumber + args.output)
     # print(run.par_path)
     # print(run.dir_path)
 

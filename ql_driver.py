@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Script for driving QL tools produce th coefficients for QL GENE
+Script for driving QL tools produce the coefficients for QL GENE
 
 """
 
 import argparse
 import genelib as gl
 import ql_tools as ql
-import numpy as np
+# import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument("nl_param", type=str, help="nonlinear parameters file")
@@ -84,5 +84,5 @@ for i, run in enumerate(ql_runs):
 print(coefs["ions"])
 print(coefs["electrons"])
 
-print(np.mean(coefs["ions"], axis=0))
-print(np.mean(coefs["electrons"], axis=0))
+# print(np.mean(coefs["ions"], axis=0))
+# print(np.mean(coefs["electrons"], axis=0))

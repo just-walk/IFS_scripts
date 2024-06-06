@@ -64,8 +64,7 @@ for run in ql_runs:
 # parout.Write_Pars(out_run.par_path)
 
 # Read and time average fluxes from nrg files
-nrg_avg_t, _, oor_list = ql.nrg_time_average(
-    ql_runs, time_range, nl_run.pars["box"]["n_spec"])
+nrg_avg_t, _, oor_list = ql.nrg_time_average(ql_runs, time_range)
 flxs_avg_t = nrg_avg_t[:, :, args.nrg_cols]
 
 # Read nonlinear fluxes

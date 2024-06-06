@@ -26,7 +26,7 @@ VARNAMES = (
 VARNAME_MAP = (0, 4, 6, 5, 7)  # map fluxspectra column indices to VARNAMES
 
 
-def nrg_time_average(runlist, time_range, nspec):
+def nrg_time_average(runlist, time_range):
     """
     Function for reading a list of input files (.dat or ####) and
     computing the average of the nrg variables over a given time window
@@ -35,6 +35,7 @@ def nrg_time_average(runlist, time_range, nspec):
     stime = time_range[0]
     etime = time_range[1]
 
+    nspec = runlist[0].pars["box"]["n_spec"]
     avg_nrg = np.zeros([len(runlist), nspec, 10])
     oor_list = []
 
